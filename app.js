@@ -1,6 +1,9 @@
+require('dotenv').config();
 var createError = require('http-errors');
 var express = require('express');
+const mongoose = require('mongoose')
 const cors = require('cors');
+const passport = require('passport');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -17,6 +20,13 @@ var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+
+mongoose.connect(process.env.MONGO_URL)
+    .then(() => console.log('==========> MongoDB connected'))
+    .catch(err => console.log('==========> err = ' , err));
+
+app.use(passport.initialize());
+require('./middleware/passport')(passport)
 
 app.use(logger('dev'));
 app.use(express.json());
